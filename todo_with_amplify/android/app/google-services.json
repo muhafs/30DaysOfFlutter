@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1026198408047",
+    "project_id": "muhamadtodo",
+    "storage_bucket": "muhamadtodo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1026198408047:android:282d2c196b0b6def28f69a",
+        "android_client_info": {
+          "package_name": "cm.muhamadhaspin.todo_with_amplify"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1026198408047-m2nksc560aub13p909r23esbsgnm5tpe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDA9S92skiDn4p_acqnHmc9umfDQHx3uU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1026198408047-m2nksc560aub13p909r23esbsgnm5tpe.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
