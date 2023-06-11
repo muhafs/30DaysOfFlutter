@@ -8,7 +8,7 @@ class TodoInitial extends TodoState {}
 class TodoFetchInProgress extends TodoState {}
 
 class TodoFetchSuccess extends TodoState {
-  List<QueryDocumentSnapshot<Map<String, dynamic>>> todos;
+  List<Todo> todos;
 
   TodoFetchSuccess({
     required this.todos,
