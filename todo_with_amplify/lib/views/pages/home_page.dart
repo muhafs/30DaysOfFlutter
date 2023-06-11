@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../data/models/todo.dart';
+import '../../data/models/Todo.dart';
 import '../../logic/bloc/todo/todo_bloc.dart';
 
 class HomePage extends StatefulWidget {
@@ -12,50 +12,61 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  @override
-  void initState() {
-    super.initState();
-
-    BlocProvider.of<TodoBloc>(context).add(TodoFetched());
-  }
+  final TextEditingController _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Todo App'),
+        title: const Text('Todo Amplify'),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          showBottomSheet(
+            context: context,
+            builder: (context) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  TextField(
+                    controller: _controller,
+                    decoration: const InputDecoration(
+                      hintText: 'Enter Todo Title',
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      BlocProvider.of<TodoBloc>(context).add(
+                        TodoCreated(title: _controller.text),
+                      );
+
+                      _controller.text = '';
+
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Save Todo'),
+                  ),
+                ],
+              );
+            },
+          );
+        },
         child: const Icon(Icons.add),
       ),
       body: BlocBuilder<TodoBloc, TodoState>(
         builder: (context, state) {
           // ! Loading
-          if (state is TodoFetchInProgress) {
+          if (state is TodoLoading) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
           // ! Success
           else if (state is TodoFetchSuccess) {
-            List<Todo> todos = state.todos;
-
-            return ListView.builder(
-              itemCount: todos.length,
-              itemBuilder: (context, index) {
-                Todo todo = todos[index];
-
-                return CheckboxListTile(
-                  value: todo.isComplete,
-                  title: Text(todo.title),
-                  onChanged: (value) {},
-                );
-              },
-            );
+            return _successView(state);
           }
           // ! Error
-          else if (state is TodoFetchFailure) {
+          else if (state is TodoFailure) {
             return Center(
               child: Text(state.message.toString()),
             );
@@ -66,6 +77,41 @@ class _HomePageState extends State<HomePage> {
           }
         },
       ),
+    );
+  }
+
+  ListView _successView(TodoFetchSuccess state) {
+    List todos = state.todos;
+
+    return ListView.builder(
+      itemCount: todos.length,
+      itemBuilder: (context, index) {
+        Todo todo = todos[index];
+
+        return Card(
+          child: CheckboxListTile(
+            value: todo.isComplete,
+            title: Text(
+              todo.title,
+              style: TextStyle(
+                color: Colors.grey,
+                decoration: todo.isComplete
+                    ? TextDecoration.lineThrough
+                    : TextDecoration.none,
+                decorationColor: Colors.black,
+              ),
+            ),
+            onChanged: (value) {
+              BlocProvider.of<TodoBloc>(context).add(
+                TodoUpdated(
+                  todo: todo,
+                  isComplete: value ?? false,
+                ),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }

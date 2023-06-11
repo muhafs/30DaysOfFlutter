@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "60809264338",
+    "project_id": "muhamad-todo",
+    "storage_bucket": "muhamad-todo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:60809264338:android:eba4d76f760da3c8ad410b",
+        "android_client_info": {
+          "package_name": "cm.muhamadhaspin.todo_with_firebase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "60809264338-klfcuvbfnug35ossrcb9jo4obr7cc9sn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUidNjnBx-8l5TK5CoCS37YcCM63KSqeM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "60809264338-klfcuvbfnug35ossrcb9jo4obr7cc9sn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

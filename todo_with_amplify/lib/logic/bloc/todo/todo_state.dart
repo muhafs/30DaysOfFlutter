@@ -3,10 +3,19 @@ part of 'todo_bloc.dart';
 
 abstract class TodoState {}
 
+abstract class TodoFailure extends TodoState {
+  Object message;
+  TodoFailure({
+    required this.message,
+  });
+}
+
 class TodoInitial extends TodoState {}
 
-class TodoFetchInProgress extends TodoState {}
+// ! Loading
+class TodoLoading extends TodoState {}
 
+// ! Fetch
 class TodoFetchSuccess extends TodoState {
   List<Todo> todos;
 
@@ -15,9 +24,20 @@ class TodoFetchSuccess extends TodoState {
   });
 }
 
-class TodoFetchFailure extends TodoState {
-  Object message;
-  TodoFetchFailure({
-    required this.message,
-  });
+class TodoFetchFailure extends TodoFailure {
+  TodoFetchFailure({required super.message});
+}
+
+// ! Create
+class TodoCreateSuccess extends TodoState {}
+
+class TodoCreateFailure extends TodoFailure {
+  TodoCreateFailure({required super.message});
+}
+
+// ! Update
+class TodoUpdateSuccess extends TodoState {}
+
+class TodoUpdateFailure extends TodoFailure {
+  TodoUpdateFailure({required super.message});
 }

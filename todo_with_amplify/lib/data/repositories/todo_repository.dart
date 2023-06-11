@@ -1,30 +1,37 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 
-import '../models/todo.dart';
+import '../models/Todo.dart';
 
 class TodoRepository {
-  final db = FirebaseFirestore.instance;
+  final DataStoreCategory db = Amplify.DataStore;
 
-  Future<List<Todo>> get() async {
-    List<Todo> todos = [];
+  Future<List<Todo>> fetch() async {
     try {
-      var td = await db.collection('todos').get();
-
-      for (var todo in td.docs) {
-        todos.add(Todo.fromJson(todo.data()));
-      }
-
-      return todos;
-    } on FirebaseException catch (e) {
-      if (kDebugMode) {
-        print(
-            'Failed with error: \nCode : ${e.code}. \nMessage: ${e.message}.');
-      }
+      List<Todo> todos = await db.query(Todo.classType);
 
       return todos;
     } catch (e) {
-      throw Exception(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<void> create(String title) async {
+    final todo = Todo(title: title, isComplete: false);
+
+    try {
+      await db.save(todo);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> update(Todo todo, bool isComplete) async {
+    final updatedTodo = todo.copyWith(isComplete: isComplete);
+
+    try {
+      await db.save(updatedTodo);
+    } catch (e) {
+      rethrow;
     }
   }
 }
