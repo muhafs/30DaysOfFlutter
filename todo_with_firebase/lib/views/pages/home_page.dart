@@ -12,6 +12,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final TextEditingController _controller = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -26,7 +28,37 @@ class _HomePageState extends State<HomePage> {
         title: const Text('Todo Firebase'),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          showBottomSheet(
+            context: context,
+            builder: (context) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  TextField(
+                    controller: _controller,
+                    decoration:
+                        const InputDecoration(hintText: 'Enter Todo Title'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      BlocProvider.of<TodoBloc>(context).add(
+                        TodoCreated(
+                          title: _controller.text,
+                        ),
+                      );
+
+                      _controller.text = '';
+
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Save Todo'),
+                  ),
+                ],
+              );
+            },
+          );
+        },
         child: const Icon(Icons.add),
       ),
       body: BlocBuilder<TodoBloc, TodoState>(
@@ -46,10 +78,19 @@ class _HomePageState extends State<HomePage> {
               itemBuilder: (context, index) {
                 Todo todo = todos[index];
 
-                return CheckboxListTile(
-                  value: todo.isComplete,
-                  title: Text(todo.title),
-                  onChanged: (value) {},
+                return Card(
+                  child: CheckboxListTile(
+                    value: todo.isComplete,
+                    title: Text(todo.title),
+                    onChanged: (value) {
+                      BlocProvider.of<TodoBloc>(context).add(
+                        TodoUpdated(
+                          todo: todo,
+                          isComplete: value ?? false,
+                        ),
+                      );
+                    },
+                  ),
                 );
               },
             );

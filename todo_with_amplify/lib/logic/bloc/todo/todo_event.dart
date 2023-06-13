@@ -3,6 +3,8 @@ part of 'todo_bloc.dart';
 
 abstract class TodoEvent {}
 
+class TodoWatched extends TodoEvent {}
+
 class TodoFetched extends TodoEvent {}
 
 class TodoCreated extends TodoEvent {

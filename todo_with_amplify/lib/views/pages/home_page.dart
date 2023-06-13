@@ -12,19 +12,22 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+// created the ScaffoldState key
+  final scaffoldState = GlobalKey<ScaffoldState>();
+
   final TextEditingController _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldState,
       appBar: AppBar(
         title: const Text('Todo Amplify'),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          showBottomSheet(
-            context: context,
-            builder: (context) {
+          scaffoldState.currentState?.showBottomSheet(
+            (context) {
               return Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [

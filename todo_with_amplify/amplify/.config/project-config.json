@@ -1,10 +1,10 @@
 {
-  "projectName": "todo_with_amplify",
-  "version": "2.0",
-  "frontend": "flutter",
   "providers": [
     "awscloudformation"
   ],
+  "projectName": "todoappwithamplify",
+  "version": "3.1",
+  "frontend": "flutter",
   "flutter": {
     "config": {
       "ResDir": "./lib/"

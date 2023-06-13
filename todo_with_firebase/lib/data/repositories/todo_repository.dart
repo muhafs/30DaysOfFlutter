@@ -8,11 +8,18 @@ class TodoRepository {
 
   Future<List<Todo>> get() async {
     List<Todo> todos = [];
+
     try {
       var td = await db.collection('todos').get();
 
       for (var todo in td.docs) {
-        todos.add(Todo.fromJson(todo.data()));
+        Map<String, dynamic> data = {
+          'id': todo.id,
+          'title': todo.data()['title'],
+          'isComplete': todo.data()['isComplete'],
+        };
+
+        todos.add(Todo.fromJson(data));
       }
 
       return todos;
@@ -23,6 +30,37 @@ class TodoRepository {
       }
 
       return todos;
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<void> create(String title) async {
+    try {
+      await db.collection('todos').add({
+        'title': title,
+        'isComplete': false,
+      });
+    } on FirebaseException catch (e) {
+      if (kDebugMode) {
+        print(
+            'Failed with error: \nCode : ${e.code}. \nMessage: ${e.message}.');
+      }
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<void> update(Todo todo, bool isComplete) async {
+    try {
+      await db.collection('todos').doc(todo.id).update({
+        'isComplete': isComplete,
+      });
+    } on FirebaseException catch (e) {
+      if (kDebugMode) {
+        print(
+            'Failed with error: \nCode : ${e.code}. \nMessage: ${e.message}.');
+      }
     } catch (e) {
       throw Exception(e.toString());
     }

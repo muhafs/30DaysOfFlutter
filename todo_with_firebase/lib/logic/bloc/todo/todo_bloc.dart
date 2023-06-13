@@ -12,6 +12,10 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
 
   TodoBloc({required this.todoRepository}) : super(TodoInitial()) {
     on<TodoFetched>(_todoFetched);
+
+    on<TodoCreated>(_todoCreated);
+
+    on<TodoUpdated>(_todoUpdated);
   }
 
   FutureOr<void> _todoFetched(TodoFetched event, Emitter emit) async {
@@ -21,6 +25,30 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
       List<Todo> todos = await todoRepository.get();
 
       emit(TodoFetchSuccess(todos: todos));
+    } catch (e) {
+      emit(TodoFetchFailure(message: e.toString()));
+    }
+  }
+
+  FutureOr<void> _todoCreated(TodoCreated event, Emitter emit) async {
+    emit(TodoFetchInProgress());
+
+    try {
+      await todoRepository.create(event.title);
+
+      add(TodoFetched());
+    } catch (e) {
+      emit(TodoFetchFailure(message: e.toString()));
+    }
+  }
+
+  FutureOr<void> _todoUpdated(TodoUpdated event, Emitter emit) async {
+    emit(TodoFetchInProgress());
+
+    try {
+      await todoRepository.update(event.todo, event.isComplete);
+
+      add(TodoFetched());
     } catch (e) {
       emit(TodoFetchFailure(message: e.toString()));
     }

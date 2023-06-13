@@ -1,3 +1,5 @@
+import 'package:amplify_api/amplify_api.dart';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'data/repositories/todo_repository.dart';
@@ -42,7 +44,9 @@ class _MyAppState extends State<MyApp> {
       child: BlocProvider(
         create: (context) => TodoBloc(
           todoRepository: RepositoryProvider.of<TodoRepository>(context),
-        ),
+        )
+          ..add(TodoFetched())
+          ..add(TodoWatched()),
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Todo Amplify',
@@ -58,20 +62,23 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _configureAmplify() async {
-    // await Amplify.addPlugin(AmplifyAPI()); // UNCOMMENT this line after backend is deployed
-    await Amplify.addPlugin(
-        AmplifyDataStore(modelProvider: ModelProvider.instance));
-
     try {
+      await Future.wait([
+        Amplify.addPlugin(
+            AmplifyDataStore(modelProvider: ModelProvider.instance)),
+        Amplify.addPlugin(AmplifyAPI()),
+        Amplify.addPlugin(AmplifyAuthCognito()),
+      ]);
+
       // Once Plugins are added, configure Amplify
       await Amplify.configure(amplifyconfig);
+
+      setState(() {
+        _amplifyConfigured = true;
+      });
     } catch (e) {
       // ignore: avoid_print
       print(e);
     }
-
-    setState(() {
-      _amplifyConfigured = true;
-    });
   }
 }

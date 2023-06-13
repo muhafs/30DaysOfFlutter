@@ -9,6 +9,9 @@ class TodoRepository {
     try {
       List<Todo> todos = await db.query(Todo.classType);
 
+      // ignore: avoid_print
+      print(todos);
+
       return todos;
     } catch (e) {
       rethrow;
@@ -33,5 +36,9 @@ class TodoRepository {
     } catch (e) {
       rethrow;
     }
+  }
+
+  Stream<SubscriptionEvent<Todo>> watch() {
+    return db.observe(Todo.classType);
   }
 }

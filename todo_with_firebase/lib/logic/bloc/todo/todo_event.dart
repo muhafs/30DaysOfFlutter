@@ -7,14 +7,20 @@ class TodoFetched extends TodoEvent {}
 
 class TodoCreated extends TodoEvent {
   final String title;
-  final bool isComplete;
 
   TodoCreated({
     required this.title,
-    required this.isComplete,
   });
 }
 
-class TodoUpdated extends TodoEvent {}
+class TodoUpdated extends TodoEvent {
+  Todo todo;
+  bool isComplete;
+
+  TodoUpdated({
+    required this.todo,
+    required this.isComplete,
+  });
+}
 
 class TodoDeleted extends TodoEvent {}
