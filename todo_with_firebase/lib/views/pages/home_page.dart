@@ -4,34 +4,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/models/todo.dart';
 import '../../logic/bloc/todo/todo_bloc.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class HomePage extends StatelessWidget {
+  HomePage({super.key});
 
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
+// created the ScaffoldState key
+  final _scaffoldState = GlobalKey<ScaffoldState>();
 
-class _HomePageState extends State<HomePage> {
   final TextEditingController _controller = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-
-    BlocProvider.of<TodoBloc>(context).add(TodoFetched());
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldState,
       appBar: AppBar(
         title: const Text('Todo Firebase'),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          showBottomSheet(
-            context: context,
-            builder: (context) {
+          _scaffoldState.currentState?.showBottomSheet(
+            (context) {
               return Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [

@@ -65,4 +65,8 @@ class TodoRepository {
       throw Exception(e.toString());
     }
   }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> watch() {
+    return db.collection('todos').snapshots();
+  }
 }

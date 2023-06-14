@@ -21,9 +21,8 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     on<TodoUpdated>(_todoUpdated);
   }
 
-  FutureOr<void> _todoWatched(TodoWatched event, Emitter emit) async {
+  FutureOr<void> _todoWatched(TodoWatched event, Emitter emit) {
     try {
-      // List<Todo> todos = await todoRepository.fetch();
       final Stream<SubscriptionEvent<Todo>> todoStream = todoRepository.watch();
 
       todoStream.listen((_) => add(TodoFetched()));

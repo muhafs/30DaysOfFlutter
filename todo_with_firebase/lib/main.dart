@@ -27,12 +27,14 @@ class MyApp extends StatelessWidget {
       child: BlocProvider(
         create: (context) => TodoBloc(
           todoRepository: RepositoryProvider.of<TodoRepository>(context),
-        ),
+        )
+          ..add(TodoFetched())  
+          ..add(TodoWatched()),
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Todo App',
           theme: ThemeData.dark(),
-          home: const HomePage(),
+          home: HomePage(),
         ),
       ),
     );

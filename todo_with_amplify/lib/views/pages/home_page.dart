@@ -12,7 +12,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-// created the ScaffoldState key
+  // created the ScaffoldState key
   final scaffoldState = GlobalKey<ScaffoldState>();
 
   final TextEditingController _controller = TextEditingController();
