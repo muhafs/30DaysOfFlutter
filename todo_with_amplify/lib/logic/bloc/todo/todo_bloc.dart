@@ -10,8 +10,12 @@ part 'todo_state.dart';
 
 class TodoBloc extends Bloc<TodoEvent, TodoState> {
   final TodoRepository todoRepository;
+  final String userId;
 
-  TodoBloc({required this.todoRepository}) : super(TodoInitial()) {
+  TodoBloc({
+    required this.todoRepository,
+    required this.userId,
+  }) : super(TodoInitial()) {
     on<TodoWatched>(_todoWatched);
 
     on<TodoFetched>(_todoFetched);
@@ -23,7 +27,8 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
 
   FutureOr<void> _todoWatched(TodoWatched event, Emitter emit) {
     try {
-      final Stream<SubscriptionEvent<Todo>> todoStream = todoRepository.watch();
+      final Stream<SubscriptionEvent<Todo>> todoStream =
+          todoRepository.watch(userId);
 
       todoStream.listen((_) => add(TodoFetched()));
     } catch (e) {
@@ -35,7 +40,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     if (state is TodoFetchSuccess == false) emit(TodoLoading());
 
     try {
-      List<Todo> todos = await todoRepository.fetch();
+      List<Todo> todos = await todoRepository.fetch(userId);
 
       emit(TodoFetchSuccess(todos: todos));
     } catch (e) {
@@ -45,7 +50,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
 
   FutureOr<void> _todoCreated(TodoCreated event, Emitter emit) async {
     try {
-      await todoRepository.create(event.title);
+      await todoRepository.create(event.title, userId);
     } catch (e) {
       emit(TodoCreateFailure(message: e));
     }

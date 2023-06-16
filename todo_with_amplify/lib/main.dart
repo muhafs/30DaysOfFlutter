@@ -2,9 +2,9 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'data/repositories/todo_repository.dart';
-import 'logic/bloc/todo/todo_bloc.dart';
-import 'views/pages/home_page.dart';
+import 'package:todo_with_amplify/views/app_navigator.dart';
+import 'data/repositories/auth_repository.dart';
+import 'logic/cubit/auth/auth_cubit.dart';
 
 // Amplify Flutter Packages
 import 'package:amplify_flutter/amplify_flutter.dart';
@@ -14,6 +14,7 @@ import 'package:amplify_datastore/amplify_datastore.dart';
 // Generated in previous step
 import 'data/models/ModelProvider.dart';
 import 'amplifyconfiguration.dart';
+import 'views/pages/loading_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,6 +32,8 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   bool _amplifyConfigured = false;
 
+  final AuthRepository _authRepository = AuthRepository();
+
   @override
   void initState() {
     super.initState();
@@ -39,24 +42,15 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider(
-      create: (context) => TodoRepository(),
-      child: BlocProvider(
-        create: (context) => TodoBloc(
-          todoRepository: RepositoryProvider.of<TodoRepository>(context),
-        )
-          ..add(TodoFetched())
-          ..add(TodoWatched()),
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'Todo Amplify',
-          theme: ThemeData.dark(),
-          home: _amplifyConfigured
-              ? const HomePage()
-              : const Center(
-                  child: CircularProgressIndicator(),
-                ),
-        ),
+    return BlocProvider(
+      create: (context) => AuthCubit(
+        authRepository: _authRepository,
+      )..attemptAutoSignIn(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Todo Amplify',
+        theme: ThemeData.dark(),
+        home: _amplifyConfigured ? AppNavigator() : const LoadingPage(),
       ),
     );
   }

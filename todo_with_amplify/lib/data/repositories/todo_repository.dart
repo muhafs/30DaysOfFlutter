@@ -5,9 +5,12 @@ import '../models/Todo.dart';
 class TodoRepository {
   final DataStoreCategory db = Amplify.DataStore;
 
-  Future<List<Todo>> fetch() async {
+  Future<List<Todo>> fetch(String userId) async {
     try {
-      List<Todo> todos = await db.query(Todo.classType);
+      List<Todo> todos = await db.query(
+        Todo.classType,
+        where: Todo.USERID.eq(userId),
+      );
 
       // ignore: avoid_print
       print(todos);
@@ -18,8 +21,12 @@ class TodoRepository {
     }
   }
 
-  Future<void> create(String title) async {
-    final todo = Todo(title: title, isComplete: false);
+  Future<void> create(String title, String userId) async {
+    final todo = Todo(
+      title: title,
+      isComplete: false,
+      userId: userId,
+    );
 
     try {
       await db.save(todo);
@@ -38,7 +45,10 @@ class TodoRepository {
     }
   }
 
-  Stream<SubscriptionEvent<Todo>> watch() {
-    return db.observe(Todo.classType);
+  Stream<SubscriptionEvent<Todo>> watch(String userId) {
+    return db.observe(
+      Todo.classType,
+      where: Todo.USERID.eq(userId),
+    );
   }
 }

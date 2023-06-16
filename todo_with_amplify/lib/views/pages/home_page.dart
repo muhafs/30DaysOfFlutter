@@ -3,8 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../data/models/Todo.dart';
 import '../../logic/bloc/todo/todo_bloc.dart';
+import '../../logic/cubit/auth/auth_cubit.dart';
 
 class HomePage extends StatefulWidget {
+  static const String id = 'homePage';
+
   const HomePage({super.key});
 
   @override
@@ -23,6 +26,12 @@ class _HomePageState extends State<HomePage> {
       key: scaffoldState,
       appBar: AppBar(
         title: const Text('Todo Amplify'),
+        actions: [
+          IconButton(
+            onPressed: () => context.read<AuthCubit>().signOut(),
+            icon: const Icon(Icons.exit_to_app_rounded),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

@@ -29,6 +29,7 @@ class Todo extends Model {
   final String id;
   final String? _title;
   final bool? _isComplete;
+  final String? _userId;
   final TemporalDateTime? _createdAt;
   final TemporalDateTime? _updatedAt;
 
@@ -70,6 +71,19 @@ class Todo extends Model {
     }
   }
 
+  String get userId {
+    try {
+      return _userId!;
+    } catch (e) {
+      throw new AmplifyCodeGenModelException(
+          AmplifyExceptionMessages
+              .codeGenRequiredFieldForceCastExceptionMessage,
+          recoverySuggestion: AmplifyExceptionMessages
+              .codeGenRequiredFieldForceCastRecoverySuggestion,
+          underlyingException: e.toString());
+    }
+  }
+
   TemporalDateTime? get createdAt {
     return _createdAt;
   }
@@ -82,18 +96,25 @@ class Todo extends Model {
       {required this.id,
       required title,
       required isComplete,
+      required userId,
       createdAt,
       updatedAt})
       : _title = title,
         _isComplete = isComplete,
+        _userId = userId,
         _createdAt = createdAt,
         _updatedAt = updatedAt;
 
-  factory Todo({String? id, required String title, required bool isComplete}) {
+  factory Todo(
+      {String? id,
+      required String title,
+      required bool isComplete,
+      required String userId}) {
     return Todo._internal(
         id: id == null ? UUID.getUUID() : id,
         title: title,
-        isComplete: isComplete);
+        isComplete: isComplete,
+        userId: userId);
   }
 
   bool equals(Object other) {
@@ -106,7 +127,8 @@ class Todo extends Model {
     return other is Todo &&
         id == other.id &&
         _title == other._title &&
-        _isComplete == other._isComplete;
+        _isComplete == other._isComplete &&
+        _userId == other._userId;
   }
 
   @override
@@ -122,6 +144,7 @@ class Todo extends Model {
     buffer.write("isComplete=" +
         (_isComplete != null ? _isComplete!.toString() : "null") +
         ", ");
+    buffer.write("userId=" + "$_userId" + ", ");
     buffer.write("createdAt=" +
         (_createdAt != null ? _createdAt!.format() : "null") +
         ", ");
@@ -132,17 +155,19 @@ class Todo extends Model {
     return buffer.toString();
   }
 
-  Todo copyWith({String? title, bool? isComplete}) {
+  Todo copyWith({String? title, bool? isComplete, String? userId}) {
     return Todo._internal(
         id: id,
         title: title ?? this.title,
-        isComplete: isComplete ?? this.isComplete);
+        isComplete: isComplete ?? this.isComplete,
+        userId: userId ?? this.userId);
   }
 
   Todo.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         _title = json['title'],
         _isComplete = json['isComplete'],
+        _userId = json['userId'],
         _createdAt = json['createdAt'] != null
             ? TemporalDateTime.fromString(json['createdAt'])
             : null,
@@ -154,6 +179,7 @@ class Todo extends Model {
         'id': id,
         'title': _title,
         'isComplete': _isComplete,
+        'userId': _userId,
         'createdAt': _createdAt?.format(),
         'updatedAt': _updatedAt?.format()
       };
@@ -162,6 +188,7 @@ class Todo extends Model {
         'id': id,
         'title': _title,
         'isComplete': _isComplete,
+        'userId': _userId,
         'createdAt': _createdAt,
         'updatedAt': _updatedAt
       };
@@ -171,6 +198,7 @@ class Todo extends Model {
   static final QueryField ID = QueryField(fieldName: "id");
   static final QueryField TITLE = QueryField(fieldName: "title");
   static final QueryField ISCOMPLETE = QueryField(fieldName: "isComplete");
+  static final QueryField USERID = QueryField(fieldName: "userId");
   static var schema =
       Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "Todo";
@@ -196,6 +224,11 @@ class Todo extends Model {
         key: Todo.ISCOMPLETE,
         isRequired: true,
         ofType: ModelFieldType(ModelFieldTypeEnum.bool)));
+
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+        key: Todo.USERID,
+        isRequired: true,
+        ofType: ModelFieldType(ModelFieldTypeEnum.string)));
 
     modelSchemaDefinition.addField(ModelFieldDefinition.nonQueryField(
         fieldName: 'createdAt',
